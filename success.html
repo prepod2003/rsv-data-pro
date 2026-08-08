@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата прошла — MCP:RSV Data Pro</title>
+  <meta name="description" content="Оплата прошла успешно. Ключ активации отправлен на указанную почту — осталось ввести его в форме настройки в 1С.">
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/site.css">
+
+  <style>
+    /* Страница результата оплаты: одна колонка по центру. Цвета — только переменные палитры. */
+    .result { max-width: 640px; margin: 0 auto; }
+    .result h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); margin-bottom: 16px; }
+    .result .feat-icon { margin: 0 auto 22px; }
+    .result .summary-card { text-align: left; margin: 32px 0; }
+    .result .summary-card h3 { margin-bottom: 18px; }
+    .result .info-list { margin-bottom: 0; }
+    .result .note-inline { text-align: left; margin-top: 32px; }
+  </style>
+</head>
+<body>
+
+<section class="section" style="border-top:0;padding:56px 0 72px;">
+  <div class="container-narrow center">
+
+    <a href="index.html" class="nav-brand" style="display:inline-flex;">
+      <span class="nav-brand-badge">RSV</span>
+      Data&nbsp;Pro
+    </a>
+
+    <div class="result" style="margin-top:44px;">
+      <div class="feat-icon">✅</div>
+
+      <span class="eyebrow">Оплата</span>
+      <h1>Оплата прошла</h1>
+      <p class="lead">
+        Ключ активации отправлен на указанную вами электронную почту. Проверьте папку «Входящие»,
+        а если письма нет — папку «Спам».
+      </p>
+
+      <div class="summary-card">
+        <h3>Что дальше</h3>
+        <ul class="info-list">
+          <li><span class="info-icon">1</span><span>Откройте в 1С форму настройки
+            <strong>MCP:RSV Data Pro</strong> — она находится в разделе продукта.</span></li>
+          <li><span class="info-icon">2</span><span>В блоке <strong>«Лицензия»</strong> вставьте
+            ключ из письма — он выглядит как <code>ACT-XXX-XXXXXXXX</code>.</span></li>
+          <li><span class="info-icon">3</span><span>Нажмите <strong>«Активировать»</strong>.
+            В блоке появится тариф и дата, по которую действует лицензия.</span></li>
+        </ul>
+      </div>
+
+      <a href="index.html" class="btn btn-primary btn-lg">На главную</a>
+
+      <div class="note-inline">
+        <b>Можно и словами.</b> Ключ необязательно вводить руками: скажите своему ИИ-агенту
+        «активируй ключ ACT-…» — он сделает это сам. Подробности — в
+        <a href="guide.html">руководстве пользователя</a>.
+        <br><br>
+        Письмо не пришло или ключ не принимается? Напишите на
+        <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a> или в
+        <a href="https://t.me/rsv_data_pro" target="_blank" rel="noopener">канал продукта @rsv_data_pro</a> —
+        разберёмся.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+  <div class="container-narrow center" style="margin-top:48px;padding-top:20px;border-top:1px solid var(--border);font-size:.84rem;color:var(--text-dim);line-height:1.6;">
+    <p style="margin:0 0 8px;">Разработал <a href="https://t.me/Prepod2003" target="_blank" rel="noopener">Радзивиллович Сергей</a></p>
+    <p style="margin:0;">«1С», «1С:Предприятие» — товарные знаки фирмы «1С». MCP:RSV Data Pro — независимая
+    разработка, не входит в линейку продуктов фирмы «1С».</p>
+  </div>
+
+</body>
+</html>
