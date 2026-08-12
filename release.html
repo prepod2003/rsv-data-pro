@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Описание выпуска — MCP:RSV Data Pro</title>
+  <meta name="description" content="Что нового в каждой версии MCP:RSV Data Pro: подключение ИИ-клиента, лицензия, отчёты, документация.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/docs.css">
+  <style>
+    /* Вся типографика — из docs.css, как в руководстве и справочнике инструментов.
+       Здесь только то, чего нет на других страницах документации. */
+
+    /* Пилюля с номером версии в шапке статьи */
+    .release-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 4px 14px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-soft2);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      color: var(--accent-hi);
+    }
+    .release-badge[hidden] { display: none; }
+
+    /* Описания всех выпусков лежат на странице сразу; показывается выбранный.
+       Без скриптов виден свежий выпуск — он помечен is-active при сборке. */
+    .release-body { display: none; }
+    .release-body.is-active { display: block; }
+
+    /* Вводная рамка выпуска — крупнее основного текста */
+    .release-lead {
+      font-size: var(--fs-md);
+      color: var(--text-m);
+      margin-bottom: 8px;
+    }
+
+    /* Запрошенной версии нет */
+    .release-unknown {
+      padding: 20px 24px;
+      background: var(--amber-soft);
+      border-left: 3px solid var(--amber);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+    .release-unknown p { color: var(--text); }
+    .release-unknown p:last-child { margin-bottom: 0; }
+
+    /* Подсказка «где взять другие выпуски» — на узком экране список прячется
+       под кнопку меню, и текст про «список слева» стал бы неправдой */
+    .only-narrow { display: none; }
+    @media (max-width: 900px) {
+      .only-wide { display: none; }
+      .only-narrow { display: inline; }
+    }
+
+    /* Кнопки под описанием выпуска */
+    .release-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .release-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-size: var(--fs-side);
+      font-weight: 600;
+      transition: all .15s;
+    }
+    .release-actions a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .release-actions a.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 8px 22px -12px rgba(124, 58, 237, .6);
+    }
+    .release-actions a.primary:hover { background: var(--accent-hi); color: #FFFFFF; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button class="hamburger" id="hamburger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="logo">
+        <span class="logo-badge">RSV</span>
+        <span class="header-title">MCP:RSV Data Pro</span>
+        <span class="header-subtitle" id="headerSubtitle">Описание выпуска</span>
+      </a>
+    </div>
+    <div class="header-links">
+      <a href="index.html" class="hide-mobile">Главная</a>
+      <a href="guide.html">Руководство</a>
+      <a href="https://t.me/rsv_data_pro" target="_blank" rel="noopener">Telegram</a>
+    </div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+
+  <div class="nav-section">
+    <span class="nav-section-title">Выпуски</span>
+    <!-- Список выпусков собирается из описаний выпусков: правки внутри маркеров
+         теряются при следующей сборке страницы. -->
+    <!-- releases:start -->
+    <a class="nav-link" href="release.html?v=2.2.0" data-rel="2.2.0">v2.2.0</a>
+    <a class="nav-link" href="release.html?v=2.1.0" data-rel="2.1.0">v2.1.0</a>
+    <!-- releases:end -->
+  </div>
+
+  <div class="nav-section" id="tocSection" hidden>
+    <span class="nav-section-title">Содержание выпуска</span>
+    <div id="toc"></div>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-section-title">Документация</span>
+    <a class="nav-link" href="guide.html">Руководство пользователя</a>
+    <a class="nav-link" href="tools.html">Справочник инструментов</a>
+    <a class="nav-link" href="index.html#download">Скачать расширение</a>
+  </div>
+
+</nav>
+
+<main class="main">
+  <div class="content">
+
+    <div class="hero">
+      <span class="release-badge" id="releaseBadge" data-v="v{v}">v2.2.0</span>
+      <h1 id="releaseTitle" data-v="Что нового в версии {v}">Что нового в версии 2.2.0</h1>
+      <p>Что изменилось в продукте от выпуска к выпуску.
+      <span class="only-wide">Другие выпуски — в списке слева.</span><span class="only-narrow">Другие
+      выпуски — в меню по кнопке ☰ вверху страницы.</span></p>
+    </div>
+
+    <div class="release-unknown" id="releaseUnknown" hidden>
+      <p id="releaseUnknownText">Такого выпуска у продукта нет.</p>
+      <p id="releaseUnknownList"></p>
+    </div>
+
+    <!-- Описания выпусков собираются из файлов описаний выпусков: правки внутри
+         маркеров теряются при следующей сборке страницы. -->
+    <!-- notes:start -->
+    <article class="release-body is-active" data-version="2.2.0">
+      <p class="release-lead">Выпуск для тех, кто уже работает с продуктом каждый день: ИИ-клиент подключается без ожидания, а обращение за поддержкой стало точнее.</p>
+      <h2 id="v2-2-0-что-в-этом-выпуске">Что в этом выпуске</h2>
+      <ul><li><a href="#v2-2-0-подключение-ии-клиента">Подключение ИИ-клиента</a> — список возможностей приходит сразу; недоступная база больше никого не задерживает; связь с базой через прокси-сервер; окно честно говорит, если новая версия ещё не применилась</li><li><a href="#v2-2-0-лицензия">Лицензия</a> — верный номер версии у поставщика; проверка лицензии там, где в интернет пускают только через прокси-сервер организации</li><li><a href="#v2-2-0-как-обновиться">Как обновиться</a> — два шага, второй обязателен</li></ul>
+      <h2 id="v2-2-0-подключение-ии-клиента">Подключение ИИ-клиента</h2>
+      <ul><li><strong>Список возможностей приходил с задержкой.</strong> После запуска ИИ-клиент до полуминуты показывал «подключение», а иногда так и оставался с прежним набором возможностей — помогало только переподключение вручную. Теперь список приходит сразу, и клиент всегда видит актуальный набор.</li><li><strong>Одна недоступная база задерживала весь список.</strong> Если база временно не отвечала — выключен VPN, не поднят сервер клиента, — ИИ-клиент ждал её при каждом обращении, и чем больше баз было подключено, тем дольше. Теперь недоступная база никого не задерживает: в списке остаётся то, что она умела при последнем удачном обращении, а когда связь появляется, набор возможностей обновляется сам.</li><li><strong>Обновление продукта больше не сбрасывает список.</strong> Раньше после установки новой версии список возможностей собирался заново, и первые секунды работы ИИ-клиент видел неполный набор. Теперь сразу показывается прежний список, а новый подтверждается следом.</li><li><strong>Связь с базой во внутренней сети срывалась из-за прокси-сервера, настроенного для интернета.</strong> У тех, кто работает через прокси-сервер или VPN, проверка связи отвечала «нет связи с базой», хотя браузер и тонкий клиент открывали ту же базу без затруднений. Теперь продукт сначала идёт к базе напрямую, как и остальные программы, а прокси-сервер пробует только если напрямую база не отозвалась — и учитывает при этом список исключений, заданный в настройках Windows. Делать ничего не нужно, это работает само; если в организации свой прокси-сервер и его нужно указать вручную, в «Подключении ИИ» для этого есть переключатель «Использовать прокси-сервер».</li><li><strong>Окно говорило «готово», а работала прежняя версия.</strong> Если в момент нажатия главной кнопки программой подключения уже пользовались — был открыт ИИ-клиент или включён чат-ассистент, — заменить её новой не получалось, но окно об этом молчало. Человек обновлял расширение, видел успешное подключение и продолжал работать на старой версии, не подозревая об этом. Теперь окно честно показывает блок «Новая версия ещё не применилась» и говорит, что сделать: закрыть ИИ-клиента, выключить чат-ассистент и нажать кнопку ещё раз. Подключаться это по-прежнему не мешает, а блок исчезает сам, как только новая версия встанет на место.</li></ul>
+      <h2 id="v2-2-0-лицензия">Лицензия</h2>
+      <ul><li><strong>Продукт сообщал не тот номер версии при проверке лицензии.</strong> Поставщик не видел, какая версия установлена, и при обращении номер приходилось называть отдельно. Теперь версия передаётся верно.</li><li><strong>Проверка лицензии не проходила там, где в интернет пускают только через прокси-сервер организации.</strong> На таком компьютере продукт сообщал, что нет связи с сервером лицензий, — при работающем интернете и открывающихся страницах в браузере, — и активировать его не удавалось вовсе. Теперь проверка лицензии идёт тем же путём, что и браузер: через прокси-сервер, указанный в настройках Windows, с учётом заданного там списка исключений. Настраивать ничего не нужно. Так же теперь работает и обращение к ИИ-помощнику.</li></ul>
+      <h2 id="v2-2-0-как-обновиться">Как обновиться</h2>
+      <ol><li>Скачайте новую версию расширения и установите её в базу поверх прежней.</li><li>Откройте «Подключение ИИ» и нажмите кнопку «Подключить».</li></ol>
+      <p>Второй шаг обязателен: по этой кнопке обновляется сама программа подключения. Без неё расширение уже новое, а программа продолжает работать прежняя.</p>
+    </article>
+
+    <article class="release-body" data-version="2.1.0">
+      <h2 id="v2-1-0-лицензия-и-пробный-период">Лицензия и пробный период</h2>
+      <ul><li><strong>Пробный период больше не начинается сам.</strong> Раньше он включался при первом обращении продукта к серверу — человек открывал окно посмотреть и терял день из четырнадцати. Теперь на закладке «Лицензия» есть кнопка «Получить пробный период», и отсчёт начинается только по ней. Открытие окна пробный период не расходует.</li><li>Пробный период даётся <strong>один раз на компьютер</strong>. Раньше его можно было получать заново под каждой учётной записью Windows.</li><li><strong>Номер рабочего места виден всегда</strong> — отдельным полем на закладке «Лицензия», его можно скопировать и назвать поставщику при обращении.</li><li>Отзыв лицензии поставщиком теперь доходит до работающей программы сам, без перезапуска, и закрывает работу со всеми подключёнными базами сразу. После возврата лицензии программа оживает так же — сама.</li><li>Продукт подтверждает лицензию у поставщика раз в 12 часов. Без интернета работа продолжается до семи дней (в пробном периоде — два), затем нужно однократное подключение.</li><li>Повторный ввод одного и того же ключа активации больше не продлевает срок ещё раз.</li><li>Отказы стали понятнее: одна причина — один текст, с подсказкой, что делать дальше.</li></ul>
+      <h2 id="v2-1-0-подключение-к-базе">Подключение к базе</h2>
+      <ul><li><strong>Исправлено: продукт мог сообщать «связи с базой нет» при работающей базе.</strong> Состояние базы не доходило до окна настройки, и человек попадал в круг «проверил — работает, подключаю — не работает».</li><li>Работающая программа теперь замечает смену пароля к базе сама — перезапуск не нужен.</li><li>Отказ базы в доступе больше не выдаётся за успешную связь.</li><li><strong>Адрес опубликованной базы подставляется сам</strong>, когда человек работает через публикацию и выбирает этот способ связи. Остаётся ввести пароль.</li></ul>
+      <h2 id="v2-1-0-окно-настройки">Окно настройки</h2>
+      <ul><li>Кнопка подключения отвечает сразу, а не ждёт минуту: если лицензии нет, окно открывает закладку «Лицензия» и говорит, что делать.</li><li>Отказ переводит на ту закладку, где проблему можно решить, и ставит курсор в нужное поле.</li><li>В ожидании виден счётчик секунд; подсказки больше не пропадают через несколько секунд.</li><li>Состояние лицензии сверяется с сервером при открытии окна — в фоне, окно не ждёт сеть.</li></ul>
+      <h2 id="v2-1-0-чат-ассистент">Чат-ассистент</h2>
+      <ul><li>Раздел остаётся на месте и открывается, но действия в нём временно недоступны: чат входит в тариф «Ассистент», который готовится к выпуску. Раньше окно чата могло не открыться вовсе.</li></ul>
+      <h2 id="v2-1-0-документация">Документация</h2>
+      <ul><li>Переписаны разделы про установку, подключение и работу с базой на другом компьютере: добавлен рекомендуемый способ через опубликованную базу, исправлены места, где текст обещал не то, что делает продукт.</li></ul>
+    </article>
+    <!-- notes:end -->
+
+    <div class="release-actions">
+      <a class="primary" href="index.html#download" data-v="⬇ Скачать версию {v}">⬇ Скачать версию 2.2.0</a>
+      <a href="guide.html">Руководство пользователя</a>
+      <a id="releaseGithub" href="https://github.com/prepod2003/rsv-data-pro/releases" target="_blank" rel="noopener">Посмотреть на GitHub</a>
+    </div>
+
+    <footer class="doc-footer">
+      <p>Вопросы и новости версий — в канале продукта
+      <a href="https://t.me/rsv_data_pro" target="_blank" rel="noopener">@rsv_data_pro</a>
+      · почта <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a></p>
+      <p>MCP:RSV Data Pro — независимая разработка Радзивилловича С.В., не связанная с фирмой «1С». «1С» и «1С:Предприятие» — её товарные знаки.</p>
+    </footer>
+
+  </div>
+</main>
+
+<button class="back-to-top" id="backToTop">↑</button>
+
+<script>
+(function(){
+  var burger  = document.getElementById('hamburger'),
+      sidebar = document.getElementById('sidebar'),
+      overlay = document.getElementById('sidebarOverlay'),
+      toTop   = document.getElementById('backToTop');
+
+  /* ---------- боковая панель: как в руководстве ---------- */
+  function closeSidebar(){
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    burger.classList.remove('active');
+  }
+  burger.addEventListener('click', function(){
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+    burger.classList.toggle('active');
+  });
+  overlay.addEventListener('click', closeSidebar);
+
+  window.addEventListener('scroll', function(){
+    if (window.scrollY > 600) toTop.classList.add('visible');
+    else toTop.classList.remove('visible');
+  });
+  toTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+
+  /* ---------- выпуски ---------- */
+  var bodies   = [].slice.call(document.querySelectorAll('.release-body')),
+      relLinks = [].slice.call(document.querySelectorAll('.nav-link[data-rel]')),
+      versions = bodies.map(function(b){ return b.getAttribute('data-version'); }),
+      badge    = document.getElementById('releaseBadge'),
+      title    = document.getElementById('releaseTitle'),
+      subtitle = document.getElementById('headerSubtitle'),
+      unknown  = document.getElementById('releaseUnknown'),
+      unkText  = document.getElementById('releaseUnknownText'),
+      unkList  = document.getElementById('releaseUnknownList'),
+      github   = document.getElementById('releaseGithub'),
+      tocBox   = document.getElementById('toc'),
+      tocSect  = document.getElementById('tocSection'),
+      spyLinks = [];
+
+  function versionFromUrl(){
+    var m = /[?&]v=([^&#]*)/.exec(window.location.search || '');
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim() : '';
+  }
+
+  function buildToc(body){
+    tocBox.innerHTML = '';
+    spyLinks = [];
+    if (!body) { tocSect.hidden = true; return; }
+    var heads = [].slice.call(body.querySelectorAll('h2[id], h3[id]'));
+    if (!heads.length) { tocSect.hidden = true; return; }
+    heads.forEach(function(h){
+      var a = document.createElement('a');
+      a.className = h.tagName === 'H3' ? 'nav-link sub' : 'nav-link';
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      tocBox.appendChild(a);
+      spyLinks.push({link: a, target: h});
+    });
+    tocSect.hidden = false;
+  }
+
+  var spyLocked = 0;
+  function spy(){
+    if (Date.now() < spyLocked) return;
+    var pos = window.scrollY + 120, cur = -1;
+    spyLinks.forEach(function(p, i){ if (p.target.offsetTop <= pos) cur = i; });
+    spyLinks.forEach(function(p, i){ p.link.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', spy);
+
+  function show(version, push){
+    var wanted = version || versions[0] || '';
+    var known  = versions.indexOf(wanted) >= 0;
+
+    bodies.forEach(function(b){
+      b.classList.toggle('is-active', known && b.getAttribute('data-version') === wanted);
+    });
+    relLinks.forEach(function(l){
+      l.classList.toggle('active', known && l.getAttribute('data-rel') === wanted);
+    });
+
+    if (known) {
+      unknown.hidden = true;
+      badge.hidden = false;
+      badge.textContent = 'v' + wanted;
+      title.textContent = 'Что нового в версии ' + wanted;
+      subtitle.textContent = 'Выпуск ' + wanted;
+      document.title = 'Версия ' + wanted + ' — MCP:RSV Data Pro';
+      github.href = 'https://github.com/prepod2003/rsv-data-pro/releases/tag/v' + wanted;
+      buildToc(document.querySelector('.release-body.is-active'));
+    } else {
+      unknown.hidden = false;
+      unkText.textContent = 'Выпуска ' + wanted + ' у продукта нет — возможно, в адресе опечатка.';
+      unkList.innerHTML = '';
+      unkList.appendChild(document.createTextNode('Вот все выпуски: '));
+      versions.forEach(function(v, i){
+        if (i) unkList.appendChild(document.createTextNode(' · '));
+        var a = document.createElement('a');
+        a.href = 'release.html?v=' + v;
+        a.textContent = 'v' + v;
+        a.setAttribute('data-jump', v);
+        unkList.appendChild(a);
+      });
+      badge.hidden = true;
+      title.textContent = 'Выпуск не найден';
+      subtitle.textContent = 'Описание выпуска';
+      document.title = 'Выпуск не найден — MCP:RSV Data Pro';
+      github.href = 'https://github.com/prepod2003/rsv-data-pro/releases';
+      buildToc(null);
+    }
+
+    if (push) {
+      history.pushState({v: wanted}, '', 'release.html?v=' + encodeURIComponent(wanted));
+    }
+    spy();
+  }
+
+  /* переключение выпуска без перезагрузки страницы */
+  function jumpHandler(e){
+    var a = e.target.closest ? e.target.closest('a') : null;
+    if (!a) return;
+    var v = a.getAttribute('data-rel') || a.getAttribute('data-jump');
+    if (!v) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    show(v, true);
+    window.scrollTo({top: 0});
+    closeSidebar();
+  }
+  sidebar.addEventListener('click', jumpHandler);
+  unkList.addEventListener('click', jumpHandler);
+
+  /* переход по содержанию — закрыть панель на телефоне */
+  tocBox.addEventListener('click', function(e){
+    if (e.target.classList.contains('nav-link')) {
+      spyLocked = Date.now() + 800;
+      spyLinks.forEach(function(p){ p.link.classList.toggle('active', p.link === e.target); });
+      closeSidebar();
+    }
+  });
+
+  window.addEventListener('popstate', function(){ show(versionFromUrl(), false); });
+
+  show(versionFromUrl(), false);
+
+  /* адрес вида release.html?v=2.2.0#раздел — доскроллить после показа выпуска */
+  if (window.location.hash) {
+    var target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    if (target) target.scrollIntoView();
+  }
+})();
+</script>
+</body>
+</html>
