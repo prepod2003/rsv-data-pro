@@ -1,0 +1,1355 @@
+/* ==========================================================================
+   MCP:RSV Docs — shared stylesheet for guide.html and tools.html
+   Matches the new landing design (cream bg + violet accent, Anthropic-style).
+   Covers both naming conventions used by the two files.
+   ========================================================================== */
+
+:root {
+  /* Surfaces — same warm cream palette as landing */
+  --bg-base:     #FAF8F5;
+  --bg-surface:  #FFFFFF;
+  --bg-elevated: #F1EDE6;
+  --bg-sunken:   #F5F1EA;
+  --bg-code:     #1B1B1F;
+
+  /* Borders */
+  --border:      #E8E3DA;
+  --border-hi:   #D4CDC0;
+
+  /* Text */
+  --text:        #1A1A1A;
+  --text-m:      #3F3B36;
+  --text-muted:  #57534E;
+  --text-dim:    #8B8680;
+  --text-dd:     #8B8680;
+
+  /* Accent — electric violet */
+  --accent:       #7C3AED;
+  --accent-hi:    #6D28D9;
+  --accent-soft:  rgba(124, 58, 237, 0.08);
+  --accent-soft2: rgba(124, 58, 237, 0.16);
+  --accent-glow:  0 18px 50px -12px rgba(124, 58, 237, 0.25);
+
+  /* Secondary status colors (used in badges/tables — kept but adapted) */
+  --green:       #16A34A;
+  --green-soft:  rgba(22, 163, 74, 0.10);
+  --amber:       #D97706;
+  --amber-soft:  rgba(217, 119, 6, 0.10);
+  --indigo:      #7C3AED; /* collapsed onto accent for unity */
+  --indigo-soft: rgba(124, 58, 237, 0.10);
+  --pink:        #DB2777;
+  --pink-soft:   rgba(219, 39, 119, 0.10);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Sizing */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 14px;
+  --sidebar-w: 280px;
+  --header-h:  64px;
+
+  /* Typography scale */
+  --fs-xs:    0.75rem;
+  --fs-sm:    0.85rem;
+  --fs-side:  0.9rem;
+  --fs-base:  1rem;
+  --fs-body:  1.02rem;
+  --fs-md:    1.08rem;
+  --fs-lg:    1.14rem;
+  --fs-h4:    1.08rem;
+  --fs-h3:    1.32rem;
+  --fs-h2:    1.65rem;
+  --fs-h1:    2.1rem;
+  --fs-mono:  0.92rem;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  /* Отступ при переходе по якорю = ровно высота шапки (64px).
+     Верхняя граница якорного h2 оказывается точно под шапкой —
+     воздух между ними создаётся padding-top самого h2 (48px). */
+  scroll-padding-top: 64px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text);
+  font-size: var(--fs-body);
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  /* Страховка от «страница уехала вбок»: длинное слово (термин, имя файла, адрес),
+     которое не помещается в строку ЦЕЛИКОМ, переносится внутри слова, а не тащит за
+     собой всю страницу. Именно break-word, а не anywhere: на расчёт ширин колонок и
+     сеток он не влияет, поэтому таблицы и раскладка остаются прежними. Широкое
+     содержимое (таблицы, блоки кода, деревья) по-прежнему ездит внутри своей рамки —
+     .table-wrap, pre и .tree-block с overflow-x: auto. */
+  overflow-wrap: break-word;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color .15s;
+}
+a:hover { color: var(--accent-hi); }
+
+strong { color: var(--text); font-weight: 600; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ==========================================================================
+   Header (both .header + .header-logo-badge AND .logo-badge conventions)
+   ========================================================================== */
+
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(250, 248, 245, 0.82);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+.header-inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;             /* название и ссылки никогда не смыкаются вплотную */
+  min-width: 0;
+}
+
+/* Левая группа шапки: кнопка меню + логотип. Раньше задавалась инлайном в каждой
+   странице — из-за этого её отступы нельзя было ужать на узком экране. */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;          /* даёт названию ужаться, а не выдавить ссылки за край */
+}
+
+/* Logo — covers both naming conventions */
+.header-logo,
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: var(--fs-md);
+  min-width: 0;
+}
+.header-logo-badge,
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 38px;
+  height: 32px;
+  padding: 0 8px;
+  background: var(--accent);
+  color: #FFFFFF;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.header-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text);
+  /* Название продукта — одной строкой всегда. Раньше на узком экране оно рвалось
+     на «MCP:RSV» и «Data Pro» и вылезало за высоту шапки. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.header-subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.header-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  color: var(--text-muted);
+  font-size: var(--fs-side);
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  transition: all .15s;
+}
+.header-back:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 0 0 auto;        /* ссылки не сжимаются: либо помещаются целиком, либо скрыты */
+}
+.header-links a {
+  color: var(--text-muted);
+  font-size: var(--fs-side);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.header-links a:hover { color: var(--text); }
+
+.version-badge {
+  padding: 4px 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-soft2);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+/* Hamburger / menu toggle */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  z-index: 200;
+}
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-muted);
+  border-radius: 2px;
+  transition: all .3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.menu-toggle {
+  display: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   Sidebar (both .sidebar-link + .nav-link conventions)
+   ========================================================================== */
+
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-sunken);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 24px 0;
+  z-index: 50;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.5);
+  z-index: 40;
+}
+.sidebar-overlay.open { display: block; }
+
+/* Section titles — tools.html uses .sidebar-section-title, guide.html uses .nav-section-title */
+.sidebar-section {
+  padding: 0 16px;
+  margin-bottom: 18px;
+}
+.sidebar-section-title,
+.nav-section-title {
+  display: block;
+  padding: 0 10px 8px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.nav-section { margin-bottom: 10px; }
+
+/* Links — both .sidebar-link and .nav-link */
+.sidebar-link,
+.nav-link {
+  display: block;
+  padding: 7px 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: var(--fs-side);
+  border-radius: 6px;
+  line-height: 1.4;
+  transition: background .15s, color .15s;
+  border-left: 3px solid transparent;
+}
+.sidebar-link:hover,
+.nav-link:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.sidebar-link.active,
+.nav-link.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.nav-link.active {
+  border-left-color: var(--accent);
+}
+.sidebar-link.indent,
+.nav-link.sub {
+  padding-left: 26px;
+  font-size: var(--fs-sm);
+}
+.sidebar-link.indent2 {
+  padding-left: 40px;
+  font-size: var(--fs-xs);
+}
+
+/* Sidebar badges (count markers) */
+.sidebar-badge {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.badge-green  { background: var(--green-soft);  color: var(--green); }
+.badge-amber  { background: var(--amber-soft);  color: var(--amber); }
+.badge-indigo { background: var(--accent-soft); color: var(--accent); }
+
+/* ==========================================================================
+   Main content — LEFT-ALIGNED (key fix for guide.html)
+   ========================================================================== */
+
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 48px 56px 120px;
+  min-height: calc(100vh - var(--header-h));
+  max-width: calc(100% - var(--sidebar-w));
+}
+
+/* Both naming conventions use max-width 860, left-aligned */
+.main-inner,
+.content {
+  max-width: 860px;
+  margin: 0;           /* NOT 0 auto — left-aligned */
+  padding: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1 {
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  margin-bottom: 14px;
+  line-height: 1.18;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  margin-top: 56px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  letter-spacing: -0.015em;
+  /* scroll-margin-top намеренно не задаём — используется только scroll-padding-top
+     на html, чтобы избежать суммирования эффектов */
+}
+/* Якорные h2 (на которые ведут ссылки навигации) — делаем разделом:
+   убираем margin, заменяем на padding + граница сверху. Это даёт чистое
+   визуальное разделение и правильное позиционирование при переходе по якорю:
+   граница оказывается сразу под фиксированной шапкой, заголовок ниже, а
+   предыдущий контент полностью уходит за шапку. */
+h2[id] {
+  margin-top: 0;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+/* Первый h2 (обычно "Что такое плагин") без верхней границы — он идёт
+   сразу после title страницы и не требует разделителя. */
+main h2[id]:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+h3 {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  margin-top: 36px;
+  margin-bottom: 14px;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  /* scroll-margin-top намеренно не задаём — используется только scroll-padding-top
+     на html, чтобы избежать суммирования эффектов */
+}
+h4 {
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  margin-top: 28px;
+  margin-bottom: 10px;
+  color: var(--text-m);
+  /* scroll-margin-top намеренно не задаём — используется только scroll-padding-top
+     на html, чтобы избежать суммирования эффектов */
+}
+p {
+  margin-bottom: 14px;
+  color: var(--text-muted);
+}
+ul, ol {
+  margin-bottom: 14px;
+  padding-left: 24px;
+  color: var(--text-muted);
+}
+li { margin-bottom: 6px; }
+li strong { color: var(--text); }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+.subtitle {
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+.subtitle a { color: var(--accent); }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  margin-bottom: 48px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: var(--fs-h1);
+  margin-bottom: 14px;
+}
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+.hero-meta span { display: flex; align-items: center; gap: 4px; }
+.hero p {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  max-width: 720px;
+  line-height: 1.72;
+}
+
+/* ==========================================================================
+   Inline code and code blocks
+   ========================================================================== */
+
+code,
+.ic {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--bg-elevated);
+  color: var(--accent-hi);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+pre {
+  background: var(--bg-code);
+  border: 1px solid #2A2A30;
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  margin-bottom: 22px;
+  overflow-x: auto;
+  line-height: 1.65;
+  position: relative;
+}
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--fs-mono);
+  color: #E4E4E7;
+  white-space: pre;
+}
+/* Basic syntax highlighting */
+pre .kw   { color: #C084FC; }
+pre .str  { color: #86EFAC; }
+pre .num  { color: #FBBF24; }
+pre .cmt  { color: #71717A; font-style: italic; }
+pre .prop { color: #7DD3FC; }
+
+pre::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #71717A;
+  font-family: var(--font-sans);
+}
+
+/* ==========================================================================
+   Blockquote
+   ========================================================================== */
+
+blockquote {
+  padding: 16px 22px;
+  margin-bottom: 18px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+blockquote p { color: var(--text); margin-bottom: 6px; }
+blockquote p:last-child { margin-bottom: 0; }
+blockquote em { color: var(--text); font-style: italic; }
+blockquote strong { color: var(--text); }
+
+/* ==========================================================================
+   Figures (screenshots)
+   ========================================================================== */
+
+.figure {
+  margin: 24px 0;
+}
+.figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+}
+.figure figcaption {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Широкий снимок формы 1С.
+   Колонка текста — 860 px, и таблица формы, ужатая до этой ширины, перестаёт читаться.
+   На широком окне такой снимок выходит за колонку текста вправо, где всё равно пусто.
+   Ширина считается от окна, поэтому кадр не может вылезти за экран: 280 px забирает
+   панель разделов, 112 px — поля страницы, ещё 24 px оставлено на полосу прокрутки.
+   До 1400 px правило не действует вовсе — снимок ведёт себя как обычный. */
+@media (min-width: 1400px) {
+  .figure.wide { width: min(1400px, calc(100vw - 416px)); }
+}
+
+/* Врезка со ссылкой на видео */
+.video-note {
+  margin: 20px 0 24px;
+  padding: 12px 16px;
+  background: rgba(124, 58, 237, 0.04);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: var(--radius);
+}
+.video-note-tag {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+.video-note p { margin: 0; font-size: 0.95em; color: var(--text-muted); }
+.video-note a { font-weight: 600; white-space: nowrap; }
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+}
+table,
+.profiles-table,
+.modes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+}
+thead th,
+.profiles-table th,
+.modes-table th {
+  text-align: left;
+  padding: 14px 18px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border-hi);
+  white-space: nowrap;
+}
+tbody td,
+.profiles-table td,
+.modes-table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: top;
+}
+tbody tr:nth-child(odd)  { background: var(--bg-surface); }
+tbody tr:nth-child(even) { background: var(--bg-sunken); }
+tbody tr:last-child td,
+.profiles-table tr:last-child td,
+.modes-table tr:last-child td { border-bottom: none; }
+tbody td code {
+  font-size: 0.84em;
+  white-space: nowrap;
+}
+
+.profiles-table .profile-name { font-weight: 700; white-space: nowrap; }
+.profiles-table .pn-green  { color: var(--green); }
+.profiles-table .pn-amber  { color: var(--amber); }
+.profiles-table .pn-indigo { color: var(--accent); }
+
+.modes-table td:first-child {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Profile sections (tools.html)
+   ========================================================================== */
+
+.profile-section {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.profile-header h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.profile-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green  { background: var(--green);  box-shadow: 0 0 10px var(--green-soft); }
+.dot-amber  { background: var(--amber);  box-shadow: 0 0 10px var(--amber-soft); }
+.dot-indigo { background: var(--accent); box-shadow: 0 0 10px var(--accent-soft2); }
+
+.profile-desc {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  max-width: 720px;
+  line-height: 1.7;
+}
+.profile-note {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+.profile-note strong { color: var(--text); }
+.profile-warning {
+  background: var(--amber-soft);
+  border-left: 3px solid var(--amber);
+  padding: 16px 20px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+.profile-warning strong { color: var(--amber); }
+/* Врезка на несколько абзацев или со списком: внутри врезки текст остаётся
+   основным цветом, а последний блок не добавляет лишнего отступа снизу. */
+.profile-note p, .profile-note ul, .profile-note li,
+.profile-warning p, .profile-warning ul, .profile-warning li { color: var(--text); }
+.profile-note p:last-child, .profile-note ul:last-child,
+.profile-warning p:last-child, .profile-warning ul:last-child { margin-bottom: 0; }
+
+/* ==========================================================================
+   Group header + tool card (tools.html)
+   ========================================================================== */
+
+.group-header {
+  margin-top: 40px;
+  margin-bottom: 22px;
+}
+.group-header h3 {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.group-desc {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.tool-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 30px;
+  margin-bottom: 16px;
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.tool-card:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 8px 20px -10px rgba(26, 26, 26, 0.12);
+}
+.tool-card-name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.tool-card-title {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.tool-card p {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  line-height: 1.72;
+}
+.tool-card ul {
+  margin: 10px 0;
+  padding-left: 22px;
+}
+.tool-card li {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.tool-card.border-green  { border-left: 3px solid var(--green); }
+.tool-card.border-amber  { border-left: 3px solid var(--amber); }
+.tool-card.border-indigo { border-left: 3px solid var(--accent); }
+
+/* ==========================================================================
+   Code trees
+   ========================================================================== */
+
+.code-tree,
+.tree-block {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 30px;
+  margin: 24px 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  line-height: 1.85;
+  overflow-x: auto;
+  color: var(--text-muted);
+  /* pre-wrap — сохраняем переводы строк ASCII-art дерева,
+     но разрешаем перенос длинных строк по словам */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.code-tree .tree-root,
+.tree-block .node {
+  color: var(--accent);
+  font-weight: 700;
+}
+.code-tree .tree-branch,
+.tree-block .branch {
+  color: var(--text-dim);
+}
+.code-tree .tree-cat,
+.tree-block .op {
+  font-weight: 600;
+}
+.code-tree .cat-meta,
+.code-tree .cat-spec,
+.code-tree .cat-form,
+.code-tree .cat-ext,
+.code-tree .cat-dcs,
+.code-tree .cat-common,
+.tree-block .op {
+  color: var(--accent-hi);
+}
+.tree-block .desc { color: var(--text-dim); }
+.code-tree .tree-op { color: var(--text-muted); }
+
+/* ==========================================================================
+   Operations (tools.html: ops-section, op-item, etc)
+   ========================================================================== */
+
+.ops-section {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+.ops-section h4 {
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.op-item { margin-bottom: 16px; }
+.op-name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  color: var(--accent);
+  font-weight: 600;
+}
+.op-name.sm { font-size: var(--fs-base); }
+.op-desc {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+.op-subheader {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.op-group {
+  padding: 14px 0 14px 18px;
+  margin-left: 4px;
+}
+.op-group.form-green { border-left: 2px solid var(--green); }
+.op-group.dcs-pink   { border-left: 2px solid var(--pink); }
+.op-group-stack { display: grid; gap: 8px; }
+.op-group-stack.tight { gap: 6px; }
+
+/* ==========================================================================
+   Help box / limitations
+   ========================================================================== */
+
+.help-box,
+.limitations {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 30px;
+  margin: 24px 0;
+}
+.help-box h4,
+.limitations h4 {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+.help-box p,
+.limitations p {
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.help-box p.sub {
+  font-size: var(--fs-base);
+  color: var(--text-dim);
+  margin-top: 12px;
+}
+.help-box ul,
+.limitations ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/* Пункт — это ПРЕДЛОЖЕНИЕ, внутри которого встречаются <code>, <strong> и пояснение
+   <span>. Раньше пункт был флексом: каждый такой тег становился отдельным элементом
+   строки, а строка без переноса не давала им опуститься ниже — на узком экране
+   пояснение уезжало за край и тащило за собой всю страницу (320 px: справочник
+   инструментов был шире экрана на 43 px). Разрешить перенос мало: элементы переносятся
+   целиком, и строка вида «Виден один license» / «, остальных нет» начиналась с запятой.
+   Обычный текстовый поток переносит фразу по словам, как и положено предложению. */
+.help-box li,
+.limitations li {
+  padding: 6px 0;
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+}
+.help-box li .hint { color: var(--text-dim); }
+.limitations li { color: var(--text-dim); }
+
+/* ==========================================================================
+   Back-to-top button
+   ========================================================================== */
+
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  background: var(--accent);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.35);
+  z-index: 90;
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.5);
+  background: var(--accent-hi);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    width: 280px;
+    z-index: 80;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { z-index: 79; }
+
+  .main {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 28px 24px 80px;
+  }
+  .hamburger,
+  .menu-toggle { display: flex; }
+  .header-subtitle { display: none; }
+  /* На планшете и телефоне «Главная» лишняя: на главную ведёт сам логотип слева */
+  .header-links a.hide-mobile { display: none; }
+  .header { padding: 0 18px; }
+
+  h1 { font-size: 1.65rem; }
+  h2 { font-size: 1.35rem; }
+
+  .tool-card { padding: 20px 22px; }
+  .code-tree,
+  .tree-block { padding: 18px 20px; font-size: 0.84rem; }
+}
+
+/* Телефон. Ссылки шапки целиком не помещаются рядом с названием продукта: на 390 px
+   название рвалось на две строки, а «Telegram» уходил за край экрана. Поэтому на узком
+   экране в шапке остаётся только логотип с названием, а переходы между страницами живут
+   в боковом меню (кнопка ☰) и в подвале страницы. */
+@media (max-width: 660px) {
+  .header { padding: 0 14px; }
+  .header-inner { gap: 12px; }
+  .header-brand { gap: 10px; }
+  .header-links { display: none; }
+
+  .logo { gap: 9px; }
+  .header-logo-badge,
+  .logo-badge { min-width: 34px; height: 30px; padding: 0 7px; }
+  .hamburger { padding: 7px 9px; }
+}
+
+@media (max-width: 600px) {
+  .header-back { display: none; }
+  .main { padding: 22px 16px 60px; }
+  pre { padding: 14px 18px; font-size: 0.84rem; }
+
+  /* Поля в 30 px съедали пятую часть экрана телефона — текст оставался в узком
+     колодце. На широком экране поля прежние. */
+  .help-box,
+  .limitations { padding: 20px 18px; }
+
+  .profiles-table,
+  .modes-table,
+  table { font-size: 0.82rem; }
+  .profiles-table th, .profiles-table td,
+  .modes-table th, .modes-table td,
+  thead th, tbody td { padding: 9px 12px; }
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+
+@media print {
+  .header,
+  .sidebar,
+  .sidebar-overlay,
+  .hamburger,
+  .menu-toggle,
+  .back-to-top { display: none !important; }
+  .main { margin: 0; max-width: 100%; padding: 0; }
+  body { background: #fff; color: #000; }
+  h1, h2, h3, h4, strong { color: #000; }
+  p, li, td { color: #333; }
+  a { color: #6D28D9; }
+  pre, code, .ic, .code-tree, .tree-block {
+    background: #F3F4F6;
+    color: #1E293B;
+    border-color: #D1D5DB;
+  }
+  code, .ic { color: #6D28D9; }
+  table, th, td { border: 1px solid #D1D5DB; }
+  blockquote { background: #F3F4F6; border-left-color: #6D28D9; }
+}
+
+/* ==========================================================================
+   Схемы устройства продукта (guide.html, раздел «Как работает программа»)
+   Блоки-узлы + «каналы» между ними с бегущими точками. Схема свёрстана
+   обычной разметкой, а не картинкой: она масштабируется, читается голосовым
+   доступом и на узком экране перестраивается в колонку.
+   ========================================================================== */
+
+.how-scheme {
+  margin: 28px 0;
+  padding: 24px 22px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.how-scheme-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 18px;
+}
+
+.how-row {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Узел схемы — участник обмена (клиент, программа, база) */
+.how-node {
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.how-node.accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft2);
+}
+.how-node-name {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+.how-node-where {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.how-node-text {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.how-node-text b { color: var(--text); font-weight: 600; }
+
+/* Канал между узлами: две дорожки — вопрос вправо, ответ влево */
+.how-pipe {
+  flex: 0 0 clamp(88px, 12vw, 128px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 10px;
+}
+.how-pipe-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.4;
+  min-height: 4.2em;
+  overflow-wrap: anywhere;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.how-track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.how-track i {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: howToRight 2.4s linear infinite;
+}
+.how-track.back i {
+  background: var(--green);
+  animation-name: howToLeft;
+}
+.how-track i:nth-child(2) { animation-delay: .8s; }
+.how-track i:nth-child(3) { animation-delay: 1.6s; }
+
+@keyframes howToRight {
+  0%   { left: -6px;  opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: 100%;  opacity: 0; }
+}
+@keyframes howToLeft {
+  0%   { left: 100%;  opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { left: -6px;  opacity: 0; }
+}
+
+.how-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: 16px;
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.how-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.how-legend b {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+/* Длинный путь к папке: единственное место, где code переносится по строкам */
+.how-path { white-space: normal; word-break: break-all; }
+
+.how-legend .ask  { background: var(--accent); }
+.how-legend .answ { background: var(--green); }
+
+/* Переключатели режимов под схемой */
+.how-switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.how-switch { flex: 1 1 260px; min-width: 0; }
+.how-switch-title {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.how-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.how-btn {
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hi);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.how-btn:hover { color: var(--text); border-color: var(--accent); }
+.how-btn.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.how-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--bg-sunken);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  line-height: 1.6;
+}
+.how-note p { margin: 0 0 8px; color: var(--text); font-size: inherit; }
+.how-note p:last-child { margin-bottom: 0; }
+
+/* Схема установки: расширение внутри базы → папка на компьютере */
+.how-files {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.how-files li {
+  padding: 3px 0 3px 16px;
+  position: relative;
+  margin: 0;
+  line-height: 1.45;
+}
+.how-files li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 11px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: .55;
+}
+
+@media (max-width: 760px) {
+  .how-row { flex-direction: column; }
+  .how-pipe {
+    flex: 0 0 auto;
+    padding: 10px 0;
+    gap: 4px;
+  }
+  .how-pipe-label { min-height: 0; }
+  .how-pipe-label::before {
+    content: "↓ ";
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .how-track { display: none; }
+  .how-legend { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .how-track i { animation: none; opacity: .8; }
+  .how-track i:nth-child(1) { left: 12%; }
+  .how-track i:nth-child(2) { left: 48%; }
+  .how-track i:nth-child(3) { left: 84%; }
+}
+
+@media print {
+  .how-track i { animation: none; }
+  .how-btn { border-color: #D1D5DB; }
+}
+
+/* ── Подвал страниц документации ───────────────────────────────────────────
+   У страниц документации своя шапка и нет общего подвала сайта, поэтому
+   авторство и правовая оговорка ставятся отдельным блоком в конце статьи. */
+.doc-footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.doc-footer p { margin: 0 0 10px; }
+.doc-footer p:last-child { margin-bottom: 0; }
+.doc-footer a { color: var(--accent-hi); }
