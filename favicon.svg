@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#7C3AED"/>
+  <!-- символ данных: стопка «таблиц» базы -->
+  <ellipse cx="32" cy="19" rx="15" ry="5.5" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M17 19v9c0 3 6.7 5.5 15 5.5s15-2.5 15-5.5v-9c0 3-6.7 5.5-15 5.5S17 22 17 19z" fill="#FFFFFF" opacity="0.75"/>
+  <path d="M17 30v9c0 3 6.7 5.5 15 5.5s15-2.5 15-5.5v-9c0 3-6.7 5.5-15 5.5S17 33 17 30z" fill="#FFFFFF" opacity="0.55"/>
+  <text x="32" y="59" font-family="'JetBrains Mono', 'SF Mono', Consolas, monospace" font-size="12" font-weight="700" text-anchor="middle" fill="#FFFFFF" letter-spacing="0.5">PRO</text>
+</svg>
