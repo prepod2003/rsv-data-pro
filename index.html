@@ -985,12 +985,51 @@
       <span>Согласен на обработку персональных данных в объёме <a href="privacy.html" target="_blank" rel="noopener">политики конфиденциальности</a></span>
     </label>
 
+    <div class="up-err" id="buyPayError" hidden></div>
+
     <div class="email-modal-actions">
       <button class="em-proceed" id="buyGo" disabled>Перейти к оплате</button>
       <button class="em-cancel" id="buyCancel">Отмена</button>
     </div>
   </div>
 </div>
+
+<script>
+/* Переход к оплате — общий для окон покупки и смены тарифа.
+
+   Ссылку на форму банка страница берёт у сервера ответом JSON и открывает её сама, как
+   обычную страницу. Страницу сервера (скрипт Google) браузер показывает в рамке, и форма
+   банка, открытая оттуда, тоже попадала бы в рамку — а там не работают T-Pay и быстрые
+   способы оплаты (СБП). Сервер ответил не JSON (старая версия) или не ответил — прежний
+   переход через страницу сервера: оплата картой работает и так. */
+function goToPayment(url, go, errBox){
+  'use strict';
+  var label = go.textContent;
+  go.disabled = true;
+  go.textContent = 'Открываем оплату…';
+  errBox.hidden = true;
+  errBox.textContent = '';
+  function restore(){ go.disabled = false; go.textContent = label; }
+  /* Вернулись со страницы банка кнопкой «Назад» — кнопка снова рабочая. */
+  window.addEventListener('pageshow', function onShow(e){
+    if(e.persisted){ restore(); window.removeEventListener('pageshow', onShow); }
+  });
+  fetch(url + '&format=json')
+    .then(function(r){ return r.text(); })
+    .then(function(text){
+      var data;
+      try { data = JSON.parse(text); } catch(e) { window.location.href = url; return; }
+      if(data && data.ok && data.paymentUrl){
+        window.location.href = data.paymentUrl;
+        return;
+      }
+      restore();
+      errBox.textContent = (data && data.error) || 'Не получилось начать оплату. Попробуйте ещё раз или напишите нам.';
+      errBox.hidden = false;
+    })
+    .catch(function(){ window.location.href = url; });
+}
+</script>
 
 <script>
 /* Окно покупки.
@@ -1225,6 +1264,7 @@
   }
 
   function open(nextTier){
+    document.getElementById('buyPayError').hidden = true;
     tier = nextTier;
     period = currentPeriod();
     price = 0;
@@ -1292,9 +1332,7 @@
     if(promoOk && promo.value.trim()){
       url += '&promo=' + encodeURIComponent(promo.value.trim());
     }
-    go.disabled = true;
-    go.textContent = 'Открываем оплату…';
-    window.location.href = url;
+    goToPayment(url, go, document.getElementById('buyPayError'));
   });
 })();
 </script>
@@ -1375,6 +1413,8 @@
         <input type="checkbox" id="upPd">
         <span>Согласен на обработку персональных данных в объёме <a href="privacy.html" target="_blank" rel="noopener">политики конфиденциальности</a></span>
       </label>
+
+      <div class="up-err" id="upPayError" hidden></div>
 
       <div class="email-modal-actions">
         <button class="em-proceed" id="upGo" disabled>Перейти к оплате</button>
@@ -1578,6 +1618,7 @@
         quote = data;
         fillFacts(data);
         showStep(2);
+        document.getElementById('upPayError').hidden = true;
         refreshGo();
       })
       .catch(function(){
@@ -1637,9 +1678,7 @@
 
   go.addEventListener('click', function(){
     if(go.disabled || !asked) return;
-    go.disabled = true;
-    go.textContent = 'Открываем оплату…';
-    window.location.href = buildUrl('upgrade-pay', asked);
+    goToPayment(buildUrl('upgrade-pay', asked), go, document.getElementById('upPayError'));
   });
 })();
 </script>
