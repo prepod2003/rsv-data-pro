@@ -77,8 +77,27 @@
     .up-total span { display: block; font-size: 0.85rem; color: var(--text-muted); }
     .up-total b { display: block; margin-top: 4px; font-size: 1.9rem; line-height: 1.15; color: var(--text); }
     .up-err { margin-top: 16px; font-size: 0.88rem; color: var(--danger); }
-    .up-open { margin-top: 28px; text-align: center; }
-    .up-open p { max-width: 640px; margin: 12px auto 0; font-size: 0.9rem; color: var(--text-muted); }
+    /* Карточки под тарифами: счёт для организации, смена тарифа */
+    .pay-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; max-width: 1080px; margin: 36px auto 0; text-align: left; }
+    .pay-action { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 10px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 24px 22px; transition: transform .2s, box-shadow .2s, border-color .2s; font-family: var(--font-sans); }
+    .pay-action:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--accent-glow); }
+    .pay-action:focus-visible { outline: none; box-shadow: var(--accent-ring); border-color: var(--accent); }
+    .pa-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--accent-soft2); color: var(--accent); display: grid; place-items: center; }
+    .pa-icon svg { width: 24px; height: 24px; }
+    .pa-title { font-size: 1.1rem; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+    .pa-text { font-size: .92rem; line-height: 1.5; color: var(--text-muted); flex: 1; }
+    .pa-cta { font-size: .92rem; font-weight: 700; color: var(--accent); }
+    @media (max-width: 900px) { .pay-actions { grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 560px; } }
+    /* Окно продления: выбор срока плитками с ценой. */
+    .rn-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+    .rn-period { all: unset; box-sizing: border-box; cursor: pointer; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-surface); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 2px; }
+    .rn-period b { font-size: .95rem; color: var(--text); }
+    .rn-period span { font-size: .82rem; color: var(--text-muted); }
+    .rn-period:hover { border-color: var(--accent); }
+    .rn-period:focus-visible { box-shadow: var(--accent-ring); border-color: var(--accent); }
+    .rn-period.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+    .em-invoice-link { margin: 16px 0 0 !important; font-size: .88rem !important; color: var(--text-dim) !important; text-align: center; }
+    .em-invoice-link a { color: var(--accent); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -910,13 +929,29 @@
 
       </div>
 
-      <!-- Кнопка для тех, у кого лицензия уже есть: «Купить» в карточках заводит новую,
+      <!-- Под тарифами — две карточки (как на сайте MCP:RSV Server):
+           счёт для организации — отдельная страница invoice.html;
+           смена тарифа — окно ниже: «Купить» в карточках заводит новую лицензию,
            а здесь считается переход со «Старта» на «Бизнес» с зачётом остатка. -->
-      <div class="up-open">
-        <button class="btn btn-secondary" id="upOpen">Сменить тариф</button>
-        <p>Уже купили «Старт», а нужен «Бизнес»? Неиспользованный остаток вашей лицензии
-           зачитывается в счёт нового тарифа — доплачиваете только разницу. Сумму покажем
-           до оплаты.</p>
+      <div class="pay-actions">
+        <a class="pay-action" href="invoice.html">
+          <span class="pa-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span>
+          <span class="pa-title">Счёт для организации</span>
+          <span class="pa-text">Оплата по безналичному расчёту для организаций и ИП. Заполните реквизиты — счёт пришлём на почту, ключ активации — после оплаты.</span>
+          <span class="pa-cta">Запросить счёт →</span>
+        </a>
+        <button type="button" class="pay-action" id="rnOpen">
+          <span class="pa-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg></span>
+          <span class="pa-title">Продлить лицензию</span>
+          <span class="pa-text">Тот же тариф на месяц, 3 месяца, полгода или год — к текущему сроку. Ключ активации остаётся прежним, в 1С ничего вводить не нужно.</span>
+          <span class="pa-cta">Продлить →</span>
+        </button>
+        <button type="button" class="pay-action" id="upOpen">
+          <span class="pa-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span>
+          <span class="pa-title">Сменить тариф</span>
+          <span class="pa-text">Уже купили «Старт», а нужен «Бизнес»? Остаток лицензии зачитывается в счёт нового тарифа — доплачиваете только разницу. Нужен код активации.</span>
+          <span class="pa-cta">Сменить тариф →</span>
+        </button>
       </div>
 
       <p class="pricing-footer-note" style="max-width:820px;margin:28px auto 0;">
@@ -926,7 +961,8 @@
         пока вы её не нажмёте.
         Оплата картой прямо здесь: выбрали тариф и период, указали почту — ключ активации
         и кассовый чек придут на неё сразу после оплаты. Организациям и предпринимателям
-        выставляем счёт — напишите на <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a>: пришлём счёт, а после оплаты ключ
+        выставляем счёт — заполните <a href="invoice.html">заявку на счёт для организации</a>
+        или напишите на <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a>: пришлём счёт, а после оплаты ключ
         активации и закрывающие документы. Можно и в <a href="https://t.me/Prepod2003" target="_blank" rel="noopener">Telegram @Prepod2003</a>.
       </p>
 
@@ -940,7 +976,7 @@
         <a href="partner.html">«Скидка до 50% владельцам MCP:RSV Server»</a>.
       </div>
 
-      <p class="pricing-footer-note">Вопросы по оплате и счетам для юрлиц: <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a> · <a href="https://t.me/Prepod2003" target="_blank" rel="noopener">Telegram @Prepod2003</a> · Владельцам MCP:RSV Server — <a href="partner.html">скидка до 50%</a></p>
+      <p class="pricing-footer-note">Вопросы по оплате и счетам для юрлиц: <a href="invoice.html">заявка на счёт</a> · <a href="mailto:prepod2003@yandex.ru">prepod2003@yandex.ru</a> · <a href="https://t.me/Prepod2003" target="_blank" rel="noopener">Telegram @Prepod2003</a> · Владельцам MCP:RSV Server — <a href="partner.html">скидка до 50%</a></p>
     </div>
   </div>
 </section>
@@ -991,6 +1027,7 @@
       <button class="em-proceed" id="buyGo" disabled>Перейти к оплате</button>
       <button class="em-cancel" id="buyCancel">Отмена</button>
     </div>
+    <p class="em-invoice-link">Платите от организации или ИП? <a href="invoice.html" id="buyInvoiceLink">Запросить счёт →</a></p>
   </div>
 </div>
 
@@ -1269,6 +1306,8 @@ function goToPayment(url, go, errBox){
     period = currentPeriod();
     price = 0;
     title.textContent = 'Покупка: тариф «' + (TIER_TITLES[tier] || tier) + '»';
+    /* Счёт для организации — с тем же тарифом и сроком, что выбраны здесь. */
+    document.getElementById('buyInvoiceLink').href = 'invoice.html?tier=' + tier + '&period=' + period;
     setSummary('Считаем стоимость…');
     subResult.textContent = '';
     subResult.className = 'em-promo-result';
@@ -1679,6 +1718,231 @@ function goToPayment(url, go, errBox){
   go.addEventListener('click', function(){
     if(go.disabled || !asked) return;
     goToPayment(buildUrl('upgrade-pay', asked), go, document.getElementById('upPayError'));
+  });
+})();
+</script>
+
+
+<!-- ==========================================================================
+     ОКНО ПРОДЛЕНИЯ
+     Открывается карточкой «Продлить лицензию» под тарифами. Тот же тариф, срок
+     прибавляется к ТОЙ ЖЕ лицензии — ключ прежний, в 1С ничего не вводится. Цены и
+     новый срок считает сервер, страница их только показывает.
+     ========================================================================== -->
+<div class="email-modal-bg" id="rnModal" role="dialog" aria-modal="true" aria-labelledby="rnTitle">
+  <div class="email-modal-box">
+    <h3 id="rnTitle">Продление лицензии</h3>
+
+    <div class="up-step" id="rnStep1">
+      <p>Срок прибавится к вашей лицензии, ключ активации останется прежним — вводить в 1С
+         ничего не нужно. Укажите ключ и почту, на которую покупали лицензию.</p>
+
+      <label class="em-promo-label" for="rnCode">Ключ активации вашей лицензии — из письма о покупке. В 1С: раздел «MCP:RSV Data Pro» → «Подключение ИИ» → закладка «Лицензия»</label>
+      <input type="text" id="rnCode" placeholder="ACT-XXX-XXXXXXXX" autocomplete="off">
+
+      <div class="em-promo-row">
+        <label class="em-promo-label" for="rnEmail">Почта, на которую покупали лицензию — на неё придут письмо о продлении и кассовый чек</label>
+        <input type="email" id="rnEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="em-promo-row">
+        <label class="em-promo-label" for="rnSub">Есть лицензия MCP:RSV Server? Введите её ключ активации — цена уменьшится</label>
+        <input type="text" id="rnSub" placeholder="ACT-XXX-XXXXXXXX" autocomplete="off">
+        <label class="em-terms-row" for="rnOtherMail" style="margin-top:10px">
+          <input type="checkbox" id="rnOtherMail">
+          <span>Подписку покупали на другую почту</span>
+        </label>
+        <input type="email" id="rnSubEmail" placeholder="почта, на которую покупали MCP:RSV Server" style="display:none;margin-top:8px">
+      </div>
+
+      <div class="up-err" id="rnError"></div>
+
+      <div class="email-modal-actions">
+        <button class="em-proceed" id="rnCalc">Узнать стоимость</button>
+        <button class="em-cancel" id="rnCancel">Отмена</button>
+      </div>
+    </div>
+
+    <div class="up-step" id="rnStep2" hidden>
+      <div class="up-facts">
+        <h4>Сейчас у вас</h4>
+        <div id="rnNowRows"></div>
+      </div>
+      <div class="up-facts">
+        <h4>На какой срок продлить</h4>
+        <div class="rn-periods" id="rnPeriods" role="radiogroup" aria-label="Срок продления"></div>
+        <div id="rnNextRows" style="margin-top:10px"></div>
+      </div>
+
+      <div class="up-total">
+        <span>К оплате</span>
+        <b id="rnSum"></b>
+      </div>
+
+      <label class="em-terms-row" for="rnTerms">
+        <input type="checkbox" id="rnTerms">
+        <span>Принимаю условия <a href="terms.html" target="_blank" rel="noopener">пользовательского соглашения</a></span>
+      </label>
+      <label class="em-terms-row" for="rnPd">
+        <input type="checkbox" id="rnPd">
+        <span>Согласен на обработку персональных данных в объёме <a href="privacy.html" target="_blank" rel="noopener">политики конфиденциальности</a></span>
+      </label>
+
+      <div class="up-err" id="rnPayError" hidden></div>
+
+      <div class="email-modal-actions">
+        <button class="em-proceed" id="rnGo" disabled>Перейти к оплате</button>
+        <button class="em-cancel" id="rnBack">Назад</button>
+      </div>
+    </div>
+    <p class="em-invoice-link">Продлить по счёту для организации? <a href="invoice.html">Запросить счёт →</a></p>
+  </div>
+</div>
+
+<script>
+/* Окно продления. Расчёт и оплату делает сервер (renew-quote / renew-pay): страница
+   показывает сроки и цены из его ответа и отправляет оплату ровно с теми параметрами,
+   по которым получен показанный расчёт. Отказы приходят готовым текстом. */
+(function(){
+  'use strict';
+
+  var API = 'https://script.google.com/macros/s/AKfycbzJCqQFix-GphO6cZwF8sGDdhlMIogDB5EhTyjGmlc2EVfsBe5Iz_7ph4oWRiRs6bzX/exec';
+  var WAIT_MS = 20000;
+  var $ = function(id){ return document.getElementById(id); };
+
+  var modal = $('rnModal'), opener = $('rnOpen');
+  if(!modal || !opener) return;
+  var codeInput = $('rnCode'), mailInput = $('rnEmail'), subInput = $('rnSub');
+  var otherMail = $('rnOtherMail'), subMailIn = $('rnSubEmail'), errBox = $('rnError');
+  var calc = $('rnCalc'), go = $('rnGo'), terms = $('rnTerms'), pd = $('rnPd');
+
+  var asked = null, quote = null, chosen = null, seq = 0, waitTimer = null;
+
+  function fmt(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function looksLikeEmail(v){ return /^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(String(v || '').trim()); }
+  function humanDate(v){
+    var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? m[3] + '.' + m[2] + '.' + m[1] : String(v || '');
+  }
+  function addLine(parent, label, value){
+    var line = document.createElement('div'); line.className = 'up-line';
+    var l = document.createElement('span'); l.textContent = label;
+    var r = document.createElement('b'); r.textContent = value;
+    line.appendChild(l); line.appendChild(r); parent.appendChild(line);
+  }
+  function showStep(n){ $('rnStep1').hidden = (n !== 1); $('rnStep2').hidden = (n !== 2); }
+  function busy(on){ calc.disabled = on; calc.textContent = on ? 'Считаем…' : 'Узнать стоимость'; }
+  function refreshGo(){ go.disabled = !(quote && chosen && terms.checked && pd.checked); }
+
+  function collect(){
+    var code = codeInput.value.trim(), mail = mailInput.value.trim();
+    if(!code){ errBox.textContent = 'Введите ключ активации вашей лицензии.'; codeInput.focus(); return null; }
+    if(!looksLikeEmail(mail)){ errBox.textContent = 'Введите почту, на которую покупали лицензию: по ней сверяется покупка.'; mailInput.focus(); return null; }
+    var subCode = subInput.value.trim();
+    var subMail = (otherMail.checked ? subMailIn.value : mail).trim();
+    if(subCode && !looksLikeEmail(subMail)){ errBox.textContent = 'Укажите почту, на которую покупали MCP:RSV Server, — по ней проверяется скидка.'; subMailIn.focus(); return null; }
+    return { code: code, mail: mail, subCode: subCode, subMail: subMail };
+  }
+
+  function buildUrl(action, p, period){
+    var url = API + '?action=' + action + '&code=' + encodeURIComponent(p.code)
+            + '&email=' + encodeURIComponent(p.mail) + '&period=' + encodeURIComponent(period);
+    if(p.subCode) url += '&subscriptionCode=' + encodeURIComponent(p.subCode)
+                       + '&subscriptionEmail=' + encodeURIComponent(p.subMail);
+    return url;
+  }
+
+  /* Выбранный срок: строка нового окончания и сумма к оплате — из ответа сервера. */
+  function choose(opt){
+    chosen = opt;
+    [].slice.call($('rnPeriods').children).forEach(function(b){
+      var on = b.getAttribute('data-period') === opt.period;
+      b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+    var next = $('rnNextRows'); next.textContent = '';
+    if(quote.notActivated){
+      addLine(next, 'После активации', 'срок ключа вырастет на ' + opt.title);
+    } else {
+      addLine(next, 'Будет действовать до', humanDate(opt.newExpiresAt));
+    }
+    if(quote.discounted) addLine(next, 'Скидка', quote.discountPercent + '% — обычная цена ' + fmt(opt.retail) + ' ₽');
+    $('rnSum').textContent = fmt(opt.price) + ' ₽';
+    refreshGo();
+  }
+
+  function fill(data){
+    var now = $('rnNowRows'); now.textContent = '';
+    addLine(now, 'Тариф', '«' + (data.tier || '') + '»');
+    if(data.notActivated) addLine(now, 'Состояние', 'ключ ещё не активирован');
+    else addLine(now, data.active ? 'Действует до' : 'Срок закончился', humanDate(data.expiresAt)
+      + (data.active ? '' : ' — новый срок пойдёт от дня оплаты'));
+    var box = $('rnPeriods'); box.textContent = '';
+    (data.options || []).forEach(function(o){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'rn-period'; b.setAttribute('role', 'radio');
+      b.setAttribute('data-period', o.period);
+      var t = document.createElement('b'); t.textContent = o.title;
+      var s = document.createElement('span'); s.textContent = fmt(o.price) + ' ₽';
+      b.appendChild(t); b.appendChild(s);
+      b.addEventListener('click', function(){ choose(o); });
+      box.appendChild(b);
+    });
+    var pick = (data.options || []).filter(function(o){ return o.period === data.period; })[0] || (data.options || [])[0];
+    if(pick) choose(pick);
+  }
+
+  function askQuote(){
+    var p = collect(); if(!p) return;
+    errBox.textContent = ''; quote = null; chosen = null; refreshGo();
+    var mySeq = ++seq; busy(true);
+    clearTimeout(waitTimer);
+    waitTimer = setTimeout(function(){
+      if(mySeq !== seq) return; busy(false);
+      errBox.textContent = 'Сайт оплаты не отвечает — расчёт не получен. Повторите через минуту или напишите нам: prepod2003@yandex.ru, Telegram @Prepod2003.';
+    }, WAIT_MS);
+    fetch(buildUrl('renew-quote', p, '1Y'), { method: 'GET' })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(mySeq !== seq) return; clearTimeout(waitTimer); busy(false);
+        if(!data || !data.ok){ errBox.textContent = (data && data.error) || 'Рассчитать продление не удалось. Проверьте ключ активации и почту.'; return; }
+        asked = p; quote = data;
+        fill(data); showStep(2); $('rnPayError').hidden = true; refreshGo();
+      })
+      .catch(function(){
+        if(mySeq !== seq) return; clearTimeout(waitTimer); busy(false);
+        errBox.textContent = 'Связи с сайтом оплаты нет — расчёт не получен. Проверьте интернет и нажмите «Узнать стоимость» ещё раз или напишите нам: prepod2003@yandex.ru, Telegram @Prepod2003.';
+      });
+  }
+
+  function open(){
+    errBox.textContent = ''; quote = null; chosen = null;
+    showStep(1); busy(false); go.textContent = 'Перейти к оплате'; refreshGo();
+    modal.classList.add('active'); document.body.style.overflow = 'hidden';
+    setTimeout(function(){ codeInput.focus(); }, 50);
+  }
+  function close(){
+    clearTimeout(waitTimer); seq++; busy(false);
+    modal.classList.remove('active'); document.body.style.overflow = '';
+  }
+
+  opener.addEventListener('click', open);
+  calc.addEventListener('click', askQuote);
+  $('rnCancel').addEventListener('click', close);
+  $('rnBack').addEventListener('click', function(){ showStep(1); errBox.textContent = ''; });
+  modal.addEventListener('click', function(e){ if(e.target === modal) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('active')) close(); });
+  otherMail.addEventListener('change', function(){
+    subMailIn.style.display = otherMail.checked ? 'block' : 'none';
+    if(otherMail.checked) subMailIn.focus();
+  });
+  [codeInput, mailInput, subInput, subMailIn].forEach(function(el){
+    el.addEventListener('keydown', function(e){ if(e.key === 'Enter') askQuote(); });
+  });
+  terms.addEventListener('change', refreshGo);
+  pd.addEventListener('change', refreshGo);
+  go.addEventListener('click', function(){
+    if(go.disabled || !asked || !chosen) return;
+    goToPayment(buildUrl('renew-pay', asked, chosen.period), go, $('rnPayError'));
   });
 })();
 </script>
@@ -2097,6 +2361,7 @@ function goToPayment(url, go, errBox){
           <li><a href="terms.html">Пользовательское соглашение</a></li>
           <li><a href="privacy.html">Политика конфиденциальности</a></li>
           <li><a href="partner.html">Партнёрам</a></li>
+          <li><a href="invoice.html">Счёт для организации</a></li>
         </ul>
       </div>
       <div class="footer-links-section">
